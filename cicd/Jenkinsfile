@@ -20,9 +20,8 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir(env.FRONTEND_DIR) {
-                    // Сборка фронтенда на C# (например, Blazor)
-                  Batch scripts can only be run on Windows nodes
-                    sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                   sh 'dotnet restore'
+                   sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
             }
         }
