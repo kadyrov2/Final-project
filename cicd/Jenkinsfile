@@ -29,9 +29,8 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir(env.BACKEND_DIR) {
-                    // Сборка бэкенда на C#
-                    // bat 'dotnet restore'
-                    // bat "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                    sh 'dotnet restore'
+                    sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
             }
         }
