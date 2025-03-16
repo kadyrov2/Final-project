@@ -21,7 +21,7 @@ pipeline {
             steps {
                 dir(env.FRONTEND_DIR) {
                     // Сборка фронтенда на C# (например, Blazor)
-                    sh 'dotnet restore'
+                  Batch scripts can only be run on Windows nodes
                     sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
             }
@@ -31,8 +31,8 @@ pipeline {
             steps {
                 dir(env.BACKEND_DIR) {
                     // Сборка бэкенда на C#
-                    bat 'dotnet restore'
-                    bat "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                    // bat 'dotnet restore'
+                    // bat "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
             }
         }
@@ -41,11 +41,11 @@ pipeline {
             steps {
                 dir(env.BACKEND_DIR) {
                     // Запуск unit-тестов для бэкенда
-                    bat 'dotnet test'
+                    // bat 'dotnet test'
                 }
                 dir(env.FRONTEND_DIR) {
                     // Запуск unit-тестов для фронтенда (если есть)
-                    bat 'dotnet test'
+                    // bat 'dotnet test'
                 }
             }
         }
@@ -54,10 +54,10 @@ pipeline {
             steps {
                 // Копирование собранных файлов в директорию деплоя
                 dir(env.FRONTEND_DIR) {
-                    bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
+                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
                 }
                 dir(env.BACKEND_DIR) {
-                    bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
+                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
                 }
             }
         }
