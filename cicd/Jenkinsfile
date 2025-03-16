@@ -35,18 +35,18 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                dir(env.BACKEND_DIR) {
-                    // Запуск unit-тестов для бэкенда
-                    // bat 'dotnet test'
-                }
-                dir(env.FRONTEND_DIR) {
-                    // Запуск unit-тестов для фронтенда (если есть)
-                    // bat 'dotnet test'
-                }
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         dir(env.BACKEND_DIR) {
+        //             // Запуск unit-тестов для бэкенда
+        //             // bat 'dotnet test'
+        //         }
+        //         dir(env.FRONTEND_DIR) {
+        //             // Запуск unit-тестов для фронтенда (если есть)
+        //             // bat 'dotnet test'
+        //         }
+        //     }
+        // }
 
         stage('Deploy') {
             steps {
