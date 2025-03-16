@@ -7,6 +7,11 @@ pipeline {
         BACKEND_DIR = 'backend/Service'    // Директория с бэкендом
         BUILD_CONFIGURATION = 'Release'  // Конфигурация сборки
         DEPLOY_DIR = '/path/to/deploy'   // Директория для деплоя
+
+        kadyrov2 = 'kadyrov2'
+        GITHUB_TOKEN = credentials('GITHUB_TOKEN')  // Используйте Jenkins Credentials для хранения токена
+        FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
+        BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
     }
 
     stages {
@@ -17,23 +22,42 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
+         stage('Build Frontend') {
             steps {
                 dir(env.FRONTEND_DIR) {
-                   sh 'dotnet restore'
-                   sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
-                }
-            }
-        }
-
-        stage('Build Backend') {
-            steps {
-                dir(env.BACKEND_DIR) {
+                    // Сборка фронтенда на C# (например, Blazor)
                     sh 'dotnet restore'
                     sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
             }
         }
+
+        // stage('Build Backend') {
+        //     steps {
+        //         dir(env.BACKEND_DIR) {
+        //             sh 'dotnet restore'
+        //             sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+        //         }
+        //     }
+        // }
+
+         stage('Login to GHCR') {
+            steps {
+                script {
+                    sh "echo ${env.GITHUB_TOKEN} | docker login ghcr.io -u ${env.GITHUB_USERNAME} --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Images') {
+            steps {
+                script {
+                    sh "docker push ${env.FRONTEND_IMAGE}"
+                    // sh "docker push ${env.BACKEND_IMAGE}"
+                }
+            }
+        }
+
 
         // stage('Run Tests') {
         //     steps {
