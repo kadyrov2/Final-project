@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    environment {
+        // Укажите здесь переменные окружения, если они нужны
+        FRONTEND_DIR = 'frontend'  // Директория с фронтендом
+        BACKEND_DIR = 'backend'    // Директория с бэкендом
+        BUILD_CONFIGURATION = 'Release'  // Конфигурация сборки
+        DEPLOY_DIR = '/path/to/deploy'   // Директория для деплоя
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Получение кода из репозитория
+                checkout scm
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir(env.FRONTEND_DIR) {
+                    // Сборка фронтенда на C# (например, Blazor)
+                    bat 'dotnet restore'
+                    bat "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir(env.BACKEND_DIR) {
+                    // Сборка бэкенда на C#
+                    bat 'dotnet restore'
+                    bat "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir(env.BACKEND_DIR) {
+                    // Запуск unit-тестов для бэкенда
+                    bat 'dotnet test'
+                }
+                dir(env.FRONTEND_DIR) {
+                    // Запуск unit-тестов для фронтенда (если есть)
+                    bat 'dotnet test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Копирование собранных файлов в директорию деплоя
+                dir(env.FRONTEND_DIR) {
+                    bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
+                }
+                dir(env.BACKEND_DIR) {
+                    bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            // Действия после успешного завершения пайплайна
+            echo 'Build and deploy completed successfully!'
+        }
+        failure {
+            // Действия в случае ошибки
+            echo 'Build or deploy failed!'
+        }
+    }
+}
